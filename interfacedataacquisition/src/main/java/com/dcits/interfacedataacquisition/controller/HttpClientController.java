@@ -27,25 +27,11 @@ public class HttpClientController {
 
     @RequestMapping("getData")
     public String httpclient() throws Exception {
-        Map<String,Object> map = new HashMap<>();
-        map.put("wd","123");
-        map.put("rsv_spt","1");
-        map.put("rsv_iqid","0xe4bd260b0000656c");
-//        map.put("rsv_spt","1");
-//        map.put("rsv_spt","1");
-//        map.put("rsv_spt","1");
-//        System.setProperty("log4j2","d:/huxx.log");
-//        Logger logger = LoggerFactory.getLogger(HttpClientController.class);
+       
         String str = httpAPIService.doGet("http://www.baidu.com/s",map,null);
-        for(int i = 0;i<100;i++){
-            logger.info("info");
-            logger.debug("debug");
-            logger.warn("warn");
-            logger.error("error");
-            logger.error(str);
-        }
+		logger.info(str);
         String topic = "websocket";
         kafkaSender.send(topic,"huxixaing");
-        return "hello";
+        return "success";
     }
 }
