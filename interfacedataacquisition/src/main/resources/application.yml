@@ -1,0 +1,48 @@
+server:
+  servlet:
+    context-path: /
+  port: 8099
+
+http:
+  maxTotal: 100 #最大连接数
+  defaultMaxPerRoute: 20 #并发数
+  connectTimeout: 1000   #创建连接的最长时间
+  connectionRequestTimeout: 500  #从连接池中获取到连接的最长时间
+  socketTimeout: 10000  #数据传输的最长时间
+  staleConnectionCheckEnabled: false #提交请求前测试连接是否可用
+
+
+
+####### kafka 配置 ##################
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: cs1:6667,cs2:6667
+      #每批次发送消息的数量
+      batch-size: 16
+      #设置大于0的值将使客户端重新发送任何数据，一旦这些数据发送失败。注意，这些重试与客户端接收到发送错误时的重试没有什么不同。允许重试将潜在的改变数据的顺序，如果这两个消息记录都是发送到同一个partition，则第一个消息失败第二个发送成功，则第二条消息会比第一条消息出现要早。
+      retries: 0
+      #producer可以用来缓存数据的内存大小。如果数据产生速度大于向broker发送的速度，producer会阻塞或者抛出异常，以“block.on.buffer.full”来表明。这项设置将和producer能够使用的总内存相关，但并不是一个硬性的限制，因为不是producer使用的所有内存都是用于缓存。一些额外的内存会用于压缩（如果引入压缩机制），同样还有一些用于维护请求。
+      buffer-memory: 33554432
+      # 指定消息key和消息体的编解码方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    #kafka消费者配置
+    consumer:
+      bootstrap-servers: cs1:6667,cs2:6667
+      group-id: dataacquisition
+      #Kafka中没有初始偏移或如果当前偏移在服务器上不再存在时,默认区最新 ，有三个选项 【latest, earliest, none】
+      auto-offset-reset: latest
+      #是否开启自动提交
+      enable-auto-commit: true
+      #自动提交的时间间隔
+      auto-commit-intervals: 100
+      # 指定消息key和消息体的编解码方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    # 指定listener 容器中的线程数，用于提高并发量
+    listener:
+      concurrency: 5
+
+
+
